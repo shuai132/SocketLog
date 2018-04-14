@@ -37,6 +37,7 @@ private:
 
     const int port = 6666;
     TCPAcceptor* acceptor = nullptr;
+    bool inited = false;
 
     vector<TCPStream*> connectedStreams;
     std::mutex streamMutex;

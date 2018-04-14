@@ -26,6 +26,9 @@ SocketLog* SocketLog::getInstance() {
 }
 
 void SocketLog::post(const char* buf, size_t len) {
+    if (!inited)
+        return;
+
     msgQueueMutex.lock();
     msgQueue.push(LogMsg(buf, len));
     msgQueueMutex.unlock();
@@ -41,6 +44,9 @@ void SocketLog::post(std::string str) {
 }
 
 void SocketLog::send(const char* buf, size_t len) {
+    if (!inited)
+        return;
+
     std::lock_guard<std::mutex> lockSend(sendMutex);
     LOGD("SocketLog::send: len=%ld", len);
 
@@ -96,8 +102,12 @@ SocketLog::SocketLog() {
         LOGD("SocketLog start success! port:%d", port);
         startAcceptThread();
         startSendThread();
+        inited = true;
     } else {
         LOGD("SocketLog start failed! check your port:%d", port);
+        inited = false;
+        delete acceptor;
+        acceptor = nullptr;
     }
 }
 
