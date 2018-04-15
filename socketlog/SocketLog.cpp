@@ -25,12 +25,12 @@ SocketLog* SocketLog::getInstance() {
     return socketLog;
 }
 
-void SocketLog::post(const char* buf, size_t len) {
+void SocketLog::post(const void* buf, size_t len) {
     if (!inited)
         return;
 
     msgQueueMutex.lock();
-    msgQueue.push(LogMsg(buf, len));
+    msgQueue.push(Msg(buf, len));
     msgQueueMutex.unlock();
     msgQueueCondition.notify_one();
 }
@@ -43,7 +43,7 @@ void SocketLog::post(std::string str) {
     post(str.c_str());
 }
 
-void SocketLog::send(const char* buf, size_t len) {
+void SocketLog::send(const void* buf, size_t len) {
     if (!inited)
         return;
 
@@ -114,7 +114,7 @@ SocketLog::SocketLog() {
 void SocketLog::startSendThread() {
     new std::thread([this]{
         LOGD("sendThread running...");
-        LogMsg logMsg;
+        Msg logMsg;
 
         while (true) {
             {

@@ -13,18 +13,18 @@
 #include <condition_variable>
 #include "lib/tcpacceptor.h"
 
-struct LogMsg;
+struct Msg;
 class SocketLog {
 public:
     static SocketLog* getInstance();
 
     // post data to queue will be send automatic later
-    void post(const char* buf, size_t len);
+    void post(const void* buf, size_t len);
     void post(const char* str);
     void post(std::string str);
 
     // send data immediately with thread safe
-    void send(const char* buf, size_t len);
+    void send(const void* buf, size_t len);
     void send(const char* str);
     void send(std::string str);
 
@@ -43,55 +43,70 @@ private:
     std::mutex streamMutex;
     std::mutex sendMutex;
 
-    std::queue<LogMsg> msgQueue;
+    std::queue<Msg> msgQueue;
     std::mutex msgQueueMutex;
     std::condition_variable msgQueueCondition;
 };
 
-struct LogMsg {
-    explicit LogMsg(const char* data = nullptr, size_t len = 0) {
+struct Msg {
+    typedef unsigned char byte;
+
+    size_t len = 0;
+    byte* data = nullptr;
+
+    explicit Msg(const void* data = nullptr, size_t len = 0) {
+        if (data == nullptr || len == 0) {
+            this->len  = 0;
+            this->data = nullptr;
+            return;
+        }
+
         this->len  = len;
-        this->data = new char[len];
+        this->data = new byte[len];
         memcpy(this->data, data, len);
     }
 
-    LogMsg(const LogMsg& logMsg) {
+    Msg(const Msg& logMsg) {
         this->len  = len;
-        this->data = new char[len];
+        this->data = new byte[len];
         memcpy(this->data, data, len);
     }
 
-    LogMsg(LogMsg&& logMsg) noexcept {
+    Msg(Msg&& logMsg) noexcept {
         this->len   = logMsg.len;
         this->data  = logMsg.data;
         logMsg.data = nullptr;
     }
 
-    LogMsg& operator=(const LogMsg& logMsg) {
+    Msg& operator=(const Msg& logMsg) {
         if (&logMsg == this)
             return *this;
 
+        delete[] this->data;
         this->len = logMsg.len;
-        memcpy(data, logMsg.data, len);
+        if (len == 0) {
+            data = nullptr;
+        } else {
+            data = new byte[len];
+            memcpy(data, logMsg.data, len);
+        }
         return *this;
     }
 
-    LogMsg& operator=(LogMsg&& logMsg) noexcept {
+    Msg& operator=(Msg&& logMsg) noexcept {
         if (&logMsg == this)
             return *this;
 
+        delete[] this->data;
         this->len   = logMsg.len;
         this->data  = logMsg.data;
         logMsg.data = nullptr;
         return *this;
     }
 
-    ~LogMsg() {
+    ~Msg() {
         delete[] data;
     }
-
-    size_t len;
-    char* data;
 };
 
 #endif //SOCKETLOG_H

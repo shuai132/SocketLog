@@ -42,12 +42,12 @@ ssize_t TCPStream::send(const char* str)
     return write(m_sd, str, strlen(str));
 }
 
-ssize_t TCPStream::send(const char* buffer, size_t len)
+ssize_t TCPStream::send(const void* buffer, size_t len)
 {
     return write(m_sd, buffer, len);
 }
 
-ssize_t TCPStream::receive(char* buffer, size_t len, int timeout)
+ssize_t TCPStream::receive(void* buffer, size_t len, int timeout)
 {
     if (timeout <= 0) return read(m_sd, buffer, len);
 

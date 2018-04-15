@@ -44,8 +44,8 @@ class TCPStream
     ~TCPStream();
 
     ssize_t send(const char* str);
-    ssize_t send(const char* buffer, size_t len);
-    ssize_t receive(char* buffer, size_t len, int timeout=0);
+    ssize_t send(const void* buffer, size_t len);
+    ssize_t receive(void* buffer, size_t len, int timeout=0);
 
     string getPeerIP();
     int    getPeerPort();
