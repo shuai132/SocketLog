@@ -3,15 +3,30 @@
 A log review tool using tcp socket, with thread safe, send queue, and multi reviewer support.  
 It can be used in most platform include android/ios, and only C++11 are required.
 
-## There is a test demo, usage are as below:
+## Usage:
+```cpp
+auto socketLog = SocketLog::getInstance();
+socketLog->send("Hello World!");
 ```
+
+### There are also some examples show how to use it:
+
+First, you should build my examples:
+```bash
 mkdir build && cd build
 cmake ..
 make
-./socketlog
+```
+Second, run a simple example:
+```bash
+./examples/loopsender
+```
+or more complicated:
+```bash
+./examples/benchmark
 ```
 
-Finally, you should open an tcp test tool(eg:nc):
-```
+Finally, just open any tcp tools(eg:nc) to see what happen:
+```bash
 nc localhost 6666
 ```

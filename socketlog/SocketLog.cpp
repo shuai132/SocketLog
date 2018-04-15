@@ -2,7 +2,6 @@
 // Created by liushuai on 2018/4/13.
 //
 
-#include <cstring>
 #include <csignal>
 #include "SocketLog.h"
 
@@ -67,7 +66,7 @@ void SocketLog::send(const void* buf, size_t len) {
         if (ret == -1) {
             LOGD("send failed! delete(close) stream");
             delete stream;
-            connectedStreams.erase(iter);
+            iter = connectedStreams.erase(iter);
         } else {
             LOGD("send success! send len=%ld", len);
             iter++;

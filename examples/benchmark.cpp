@@ -1,7 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <thread>
-#include "socketlog/SocketLog.h"
+#include "../socketlog/SocketLog.h"
 
 using std::cout;
 using std::endl;
@@ -25,7 +23,7 @@ int main() {
     auto socketLog = SocketLog::getInstance();
     cout<<"for receive message, please listen port:6666 in 10s"<<endl;
     cout<<"eg: nc localhost 6666"<<endl;
-    sleep(10);  // wait for client
+    std::this_thread::sleep_for(std::chrono::seconds(10));  // wait for client
 
     std::vector<std::thread*> myThreads;
     const int threadNum = 10;
@@ -37,11 +35,13 @@ int main() {
 
     for(auto t:myThreads) {
         t->join();
+        delete t;
     }
 
-    sleep(10);  // make sure all msg has been send
+    std::this_thread::sleep_for(std::chrono::seconds(10));  // make sure all msg has been send
 
     socketLog->disconnectAllStreams();
     cout<<"---end---"<<endl;
+
     return 0;
 }

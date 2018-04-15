@@ -36,7 +36,7 @@ class TCPAcceptor
     int    m_port;
     string m_address;
     bool   m_listening;
-    
+
   public:
     TCPAcceptor(int port, const char* address="");
     ~TCPAcceptor();
