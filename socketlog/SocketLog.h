@@ -103,7 +103,6 @@ private:
 
     vector<TCPStream*> connectedStreams;
     std::mutex streamMutex;
-    std::mutex sendMutex;
 
     std::queue<Msg> msgQueue;
     std::mutex msgQueueMutex;

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../socketlog/SocketLog.h"
+#include "SocketLog.h"
 
 using std::cout;
 using std::endl;

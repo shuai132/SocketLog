@@ -43,15 +43,13 @@ void SocketLog::post(std::string str) {
 }
 
 void SocketLog::send(const void* buf, size_t len) {
+    std::lock_guard<std::mutex> lockStream(streamMutex);
+    LOGD("SocketLog::send: len=%ld", len);
+
     if (!inited)
         return;
 
-    std::lock_guard<std::mutex> lockSend(sendMutex);
-    LOGD("SocketLog::send: len=%ld", len);
-
-    std::lock_guard<std::mutex> lockStream(streamMutex);
     auto size = connectedStreams.size();
-
     if (size == 0) {
         LOGD("no stream connected now! will not send!");
     } else {
@@ -83,7 +81,6 @@ void SocketLog::send(std::string str) {
 }
 
 void SocketLog::disconnectAllStreams() {
-    std::lock_guard<std::mutex> lockSend(sendMutex);
     std::lock_guard<std::mutex> lockStream(streamMutex);
 
     for(auto stream:connectedStreams) {
