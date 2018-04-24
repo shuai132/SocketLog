@@ -137,13 +137,19 @@ void SocketLog::startAcceptThread() {
         while (true) {
             LOGD("wait for accept...");
             TCPStream* stream = acceptor->accept();
-            LOGD("catch an accept:%p", stream);
 
             if (stream) {
+                LOGD("catch an accept:%p", stream);
                 stream->send("Welcome to SocketLog!\n");
                 streamMutex.lock();
                 connectedStreams.push_back(stream);
                 streamMutex.unlock();
+            } else {
+                LOGD("accept failed! will stop acceptThread!");
+                inited = false;
+                delete acceptor;
+                acceptor = nullptr;
+                return;
             }
         }
     });
