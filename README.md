@@ -5,8 +5,7 @@ It can be used in most platform include android/ios, and only C++11 are required
 
 ## Usage:
 ```cpp
-auto socketLog = SocketLog::getInstance();
-socketLog->send("Hello World!");
+SocketLog::getInstance()->post("Hello World!");
 ```
 
 ### There are also some examples show how to use it:

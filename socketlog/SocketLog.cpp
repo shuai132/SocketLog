@@ -56,8 +56,8 @@ void SocketLog::send(const void* buf, size_t len) {
         LOGD("stream connected num=%ld", size);
     }
 
-    for(auto iter = connectedStreams.cbegin(); iter != connectedStreams.end();) {
-        auto stream = *iter;
+    for(auto iter = connectedStreams.cbegin(); iter != connectedStreams.cend();) {
+        auto& stream = *iter;
 
         LOGD("try to send to stream:%p, len=%ld", stream, len);
         auto ret = stream->send(buf, len);
@@ -110,7 +110,7 @@ SocketLog::SocketLog() {
 void SocketLog::startSendThread() {
     new std::thread([this]{
         LOGD("sendThread running...");
-        Msg logMsg;
+        Msg msg;
 
         while (true) {
             {
@@ -120,12 +120,12 @@ void SocketLog::startSendThread() {
                 msgQueueCondition.wait(lock, [this] { return !msgQueue.empty(); });
                 LOGD("msgQueueCondition wake! msgQueue.size=%ld", msgQueue.size());
 
-                logMsg = std::move(msgQueue.front());
+                msg = std::move(msgQueue.front());
                 msgQueue.pop();
             }
 
-            LOGD("try to send data.len=%ld", logMsg.len);
-            send(logMsg.data, logMsg.len);
+            LOGD("try to send data.len=%ld", msg.len);
+            send(msg.data, msg.len);
         }
     });
 }

@@ -14,7 +14,7 @@ int main() {
     while (true) {
         sprintf(buf, "hello, count=%d\n", count++);
         cout<<"try to send:"<<buf;
-        socketLog->send(buf);
+        socketLog->post(buf);
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     return 0;
