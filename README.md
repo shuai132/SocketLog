@@ -29,3 +29,6 @@ Finally, just open any tcp tools(eg:nc) to see what happen:
 ```bash
 nc localhost 6666
 ```
+
+## Notice:
+default port is 6666, and will try open bigger port automatic on bind failed。

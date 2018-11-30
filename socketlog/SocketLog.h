@@ -35,7 +35,7 @@ private:
     void startAcceptThread();
     void startSendThread();
 
-    const int port = 6666;
+    int port = 6666;
     TCPAcceptor* acceptor = nullptr;
     bool inited = false;
 

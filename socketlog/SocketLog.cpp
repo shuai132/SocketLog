@@ -88,6 +88,8 @@ void SocketLog::disconnectAllStreams() {
 
 SocketLog::SocketLog() {
     signal(SIGPIPE, SIG_IGN);
+
+    START:
     acceptor = new TCPAcceptor(port);
 
     if (acceptor->start() == 0) {
@@ -100,6 +102,9 @@ SocketLog::SocketLog() {
         inited = false;
         delete acceptor;
         acceptor = nullptr;
+
+        port++;
+        goto START;
     }
 }
 
