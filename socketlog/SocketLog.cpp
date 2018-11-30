@@ -4,20 +4,16 @@
 
 #include <csignal>
 #include "SocketLog.h"
+#include "log.h"
 
-//#define DEBUG_SOCKET_LOG
-#ifdef DEBUG_SOCKET_LOG
-    #if __ANDROID__
-        #include <android/log.h>
-        #define LOGD(...)   __android_log_print(ANDROID_LOG_DEBUG, "SocketLog", __VA_ARGS__)
-    #else
-        #include <cstdio>
-        #define LOGD(...)   do{printf(__VA_ARGS__); printf("\n");} while(0)
-    #endif
+#define LOGE(fmt, ...)      LOG(fmt, ##__VA_ARGS__)
+
+//#define DEBUG_THIS_FILE
+#ifdef DEBUG_THIS_FILE
+    #define LOGD(fmt, ...)  LOG(fmt, ##__VA_ARGS__)
 #else
-    #define LOGD(...)       ((void)0)
+    #define LOGD(fmt, ...)  ((void)0)
 #endif
-
 
 SocketLog* SocketLog::getInstance() {
     static auto socketLog = new SocketLog();
@@ -62,7 +58,7 @@ void SocketLog::send(const void* buf, size_t len) {
         LOGD("try to send to stream:%p, len=%ld", stream, len);
         auto ret = stream->send(buf, len);
         if (ret == -1) {
-            LOGD("send failed! delete(close) stream");
+            LOGE("send failed! delete(close) stream");
             delete stream;
             iter = connectedStreams.erase(iter);
         } else {
@@ -95,12 +91,12 @@ SocketLog::SocketLog() {
     acceptor = new TCPAcceptor(port);
 
     if (acceptor->start() == 0) {
-        LOGD("SocketLog start success! port:%d", port);
+        LOG("SocketLog start success! port:%d", port);
         startAcceptThread();
         startSendThread();
         inited = true;
     } else {
-        LOGD("SocketLog start failed! check your port:%d", port);
+        LOGE("SocketLog start failed! check your port:%d", port);
         inited = false;
         delete acceptor;
         acceptor = nullptr;
@@ -145,7 +141,7 @@ void SocketLog::startAcceptThread() {
                 connectedStreams.push_back(stream);
                 streamMutex.unlock();
             } else {
-                LOGD("accept failed! will stop acceptThread!");
+                LOGE("accept failed! will stop acceptThread!");
                 inited = false;
                 delete acceptor;
                 acceptor = nullptr;
