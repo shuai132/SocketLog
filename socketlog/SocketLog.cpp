@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by liushuai on 2018/4/13.
 //
@@ -42,6 +44,10 @@ void SocketLog::send(const void* buf, size_t len) {
     std::lock_guard<std::mutex> lockStream(streamMutex);
     LOGD("SocketLog::send: len=%ld", len);
 
+    if (sendInterceptor) {
+        if (sendInterceptor(buf, len)) return;
+    }
+
     if (!inited)
         return;
 
@@ -74,6 +80,10 @@ void SocketLog::send(const char* str) {
 
 void SocketLog::send(std::string str) {
     send(str.c_str());
+}
+
+void SocketLog::setSendInterceptor(Interceptor interceptor) {
+    this->sendInterceptor = std::move(interceptor);
 }
 
 void SocketLog::disconnectAllStreams() {

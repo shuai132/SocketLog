@@ -16,6 +16,9 @@
 
 class SocketLog {
 public:
+    typedef function<bool(const void* buf, size_t len)> Interceptor;
+
+public:
     static SocketLog* getInstance();
 
     // post data to queue will be send automatic later
@@ -27,6 +30,9 @@ public:
     void send(const void* buf, size_t len);
     void send(const char* str);
     void send(std::string str);
+
+    // expanded function
+    void setSendInterceptor(Interceptor interceptor);
 
     void disconnectAllStreams();
 
@@ -45,6 +51,8 @@ private:
     std::queue<Msg> msgQueue;
     std::mutex msgQueueMutex;
     std::condition_variable msgQueueCondition;
+
+    Interceptor sendInterceptor = nullptr;
 };
 
 #endif //SOCKETLOG_H

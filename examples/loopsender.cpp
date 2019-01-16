@@ -9,6 +9,11 @@ int main() {
 
     auto socketLog = SocketLog::getInstance();
 
+    socketLog->setSendInterceptor([](const void* buf, size_t len) {
+        cout<<"SendInterceptor: "<<Msg(buf, len).toString()<<endl;
+        return false;
+    });
+
     char buf[1024];
     int count = 0;
     while (true) {

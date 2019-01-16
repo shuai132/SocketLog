@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <string>
 
 struct Msg {
     typedef unsigned char byte;
@@ -27,8 +28,8 @@ struct Msg {
     }
 
     inline void moveMsg(Msg& msg) {
-        this->len   = msg.len;
-        this->data  = msg.data;
+        this->len  = msg.len;
+        this->data = msg.data;
         msg.data = nullptr;
     }
 
@@ -60,6 +61,10 @@ struct Msg {
         delete[] this->data;
         moveMsg(msg);
         return *this;
+    }
+
+    std::string toString() {
+        return std::string((char*)data, 0, len);
     }
 
     ~Msg() {
