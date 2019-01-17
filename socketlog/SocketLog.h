@@ -12,24 +12,19 @@
 #include <queue>
 #include <condition_variable>
 #include "lib/tcpacceptor.h"
-#include "msg.h"
 
 class SocketLog {
 public:
-    typedef function<bool(const byte* buf, size_t len)> Interceptor;
+    typedef function<bool(const std::string msg)> Interceptor;
 
 public:
     static SocketLog* getInstance();
 
-    // post data to queue will be send automatic later
-    void post(const byte* buf, size_t len);
-    void post(const char* str);
-    void post(std::string str);
+    // post message to queue will be send automatic later
+    void post(std::string msg);
 
-    // send data immediately with thread safe
-    void send(const byte* buf, size_t len);
-    void send(const char* str);
-    void send(std::string str);
+    // send message immediately with thread safe
+    void send(std::string msg);
 
     // expanded function
     void setSendInterceptor(Interceptor interceptor);
@@ -48,7 +43,7 @@ private:
     vector<TCPStream*> connectedStreams;
     std::mutex streamMutex;
 
-    std::queue<Msg> msgQueue;
+    std::queue<std::string> msgQueue;
     std::mutex msgQueueMutex;
     std::condition_variable msgQueueCondition;
 

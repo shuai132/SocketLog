@@ -22,30 +22,22 @@ SocketLog* SocketLog::getInstance() {
     return socketLog;
 }
 
-void SocketLog::post(const byte* buf, size_t len) {
+void SocketLog::post(std::string msg) {
     if (!inited)
         return;
 
     msgQueueMutex.lock();
-    msgQueue.push(Msg(buf, len));
+    msgQueue.push(msg);
     msgQueueMutex.unlock();
     msgQueueCondition.notify_one();
 }
 
-void SocketLog::post(const char* str) {
-    post((byte*)str, strlen(str));
-}
-
-void SocketLog::post(std::string str) {
-    post(str.c_str());
-}
-
-void SocketLog::send(const byte* buf, size_t len) {
+void SocketLog::send(std::string msg) {
     std::lock_guard<std::mutex> lockStream(streamMutex);
-    LOGD("SocketLog::send: len=%ld", len);
+    LOGD("SocketLog::send: %s", msg.c_str());
 
     if (sendInterceptor) {
-        if (sendInterceptor(buf, len)) return;
+        if (sendInterceptor(msg)) return;
     }
 
     if (!inited)
@@ -61,25 +53,17 @@ void SocketLog::send(const byte* buf, size_t len) {
     for(auto iter = connectedStreams.cbegin(); iter != connectedStreams.cend();) {
         auto& stream = *iter;
 
-        LOGD("try to send to stream:%p, len=%ld", stream, len);
-        auto ret = stream->send(buf, len);
+        LOGD("try to send to stream:%p", stream);
+        auto ret = stream->send(msg.data(), msg.length());
         if (ret == -1) {
             LOGE("send failed! delete(close) stream");
             delete stream;
             iter = connectedStreams.erase(iter);
         } else {
-            LOGD("send success! send len=%ld", len);
+            LOGD("send success!");
             iter++;
         }
     }
-}
-
-void SocketLog::send(const char* str) {
-    send((byte*)str, strlen(str));
-}
-
-void SocketLog::send(std::string str) {
-    send(str.c_str());
 }
 
 void SocketLog::setSendInterceptor(Interceptor interceptor) {
@@ -121,7 +105,7 @@ SocketLog::SocketLog() {
 void SocketLog::startSendThread() {
     new std::thread([this]{
         LOGD("sendThread running...");
-        Msg msg;
+        std::string msg;
 
         while (true) {
             {
@@ -135,8 +119,7 @@ void SocketLog::startSendThread() {
                 msgQueue.pop();
             }
 
-            LOGD("try to send data.len=%ld", msg.len);
-            send(msg.data, msg.len);
+            send(msg);
         }
     });
 }
