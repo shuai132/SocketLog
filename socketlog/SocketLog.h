@@ -16,18 +16,18 @@
 
 class SocketLog {
 public:
-    typedef function<bool(const void* buf, size_t len)> Interceptor;
+    typedef function<bool(const byte* buf, size_t len)> Interceptor;
 
 public:
     static SocketLog* getInstance();
 
     // post data to queue will be send automatic later
-    void post(const void* buf, size_t len);
+    void post(const byte* buf, size_t len);
     void post(const char* str);
     void post(std::string str);
 
     // send data immediately with thread safe
-    void send(const void* buf, size_t len);
+    void send(const byte* buf, size_t len);
     void send(const char* str);
     void send(std::string str);
 

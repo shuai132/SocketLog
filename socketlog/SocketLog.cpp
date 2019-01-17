@@ -22,7 +22,7 @@ SocketLog* SocketLog::getInstance() {
     return socketLog;
 }
 
-void SocketLog::post(const void* buf, size_t len) {
+void SocketLog::post(const byte* buf, size_t len) {
     if (!inited)
         return;
 
@@ -33,14 +33,14 @@ void SocketLog::post(const void* buf, size_t len) {
 }
 
 void SocketLog::post(const char* str) {
-    post(str, strlen(str));
+    post((byte*)str, strlen(str));
 }
 
 void SocketLog::post(std::string str) {
     post(str.c_str());
 }
 
-void SocketLog::send(const void* buf, size_t len) {
+void SocketLog::send(const byte* buf, size_t len) {
     std::lock_guard<std::mutex> lockStream(streamMutex);
     LOGD("SocketLog::send: len=%ld", len);
 
@@ -75,7 +75,7 @@ void SocketLog::send(const void* buf, size_t len) {
 }
 
 void SocketLog::send(const char* str) {
-    send(str, strlen(str));
+    send((byte*)str, strlen(str));
 }
 
 void SocketLog::send(std::string str) {

@@ -9,7 +9,7 @@ int main() {
 
     auto socketLog = SocketLog::getInstance();
 
-    socketLog->setSendInterceptor([](const void* buf, size_t len) {
+    socketLog->setSendInterceptor([](const byte* buf, size_t len) {
         cout<<"SendInterceptor: "<<Msg(buf, len).toString()<<endl;
         return false;
     });

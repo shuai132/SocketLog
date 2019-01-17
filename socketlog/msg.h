@@ -9,13 +9,13 @@
 #include <cstring>
 #include <string>
 
-struct Msg {
-    typedef unsigned char byte;
+typedef unsigned char byte;
 
+struct Msg {
     size_t len = 0;
     byte* data = nullptr;
 
-    inline void initMsg(const void* data = nullptr, size_t len = 0) {
+    inline void initMsg(const byte* data = nullptr, size_t len = 0) {
         if (data == nullptr || len == 0) {
             this->len  = 0;
             this->data = nullptr;
@@ -33,7 +33,7 @@ struct Msg {
         msg.data = nullptr;
     }
 
-    explicit Msg(const void* data = nullptr, size_t len = 0) {
+    explicit Msg(const byte* data = nullptr, size_t len = 0) {
         initMsg(data, len);
     }
 
