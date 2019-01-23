@@ -32,6 +32,15 @@ void SocketLog::post(std::string msg) {
     msgQueueCondition.notify_one();
 }
 
+void SocketLog::flush() {
+    std::lock_guard<std::mutex> lock(msgQueueMutex);
+
+    while (!msgQueue.empty()) {
+        send(std::move(msgQueue.front()));
+        msgQueue.pop();
+    }
+}
+
 void SocketLog::send(std::string msg) {
     std::lock_guard<std::mutex> lockStream(streamMutex);
     LOGD("SocketLog::send: %s", msg.c_str());
@@ -68,6 +77,10 @@ void SocketLog::send(std::string msg) {
 
 void SocketLog::setSendInterceptor(Interceptor interceptor) {
     this->sendInterceptor = std::move(interceptor);
+}
+
+int SocketLog::getPort() {
+    return this->port;
 }
 
 void SocketLog::disconnectAllStreams() {

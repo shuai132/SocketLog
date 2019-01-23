@@ -23,11 +23,16 @@ public:
     // post message to queue will be send automatic later
     void post(std::string msg);
 
+    // flush all posted messages
+    void flush();
+
     // send message immediately with thread safe
     void send(std::string msg);
 
     // expanded function
     void setSendInterceptor(Interceptor interceptor);
+
+    int getPort();
 
     void disconnectAllStreams();
 

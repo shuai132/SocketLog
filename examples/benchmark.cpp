@@ -38,7 +38,7 @@ int main() {
         delete t;
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(10));  // make sure all msg has been send
+    socketLog->flush();
 
     socketLog->disconnectAllStreams();
     cout<<"---end---"<<endl;
