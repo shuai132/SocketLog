@@ -28,13 +28,11 @@
 #include <netinet/in.h>
 #include "tcpstream.h"
 
-using namespace std;
-
 class TCPAcceptor
 {
     int    m_lsd;
     int    m_port;
-    string m_address;
+    std::string m_address;
     bool   m_listening;
 
   public:

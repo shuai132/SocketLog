@@ -59,7 +59,7 @@ ssize_t TCPStream::receive(void* buffer, size_t len, int timeout)
 
 }
 
-string TCPStream::getPeerIP()
+std::string TCPStream::getPeerIP()
 {
     return m_peerIP;
 }

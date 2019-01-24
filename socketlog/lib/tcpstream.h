@@ -29,12 +29,10 @@
 #include <unistd.h>
 #include <string>
 
-using namespace std;
-
 class TCPStream
 {
     int     m_sd;
-    string  m_peerIP;
+    std::string  m_peerIP;
     int     m_peerPort;
 
   public:
@@ -47,7 +45,7 @@ class TCPStream
     ssize_t send(const void* buffer, size_t len);
     ssize_t receive(void* buffer, size_t len, int timeout=0);
 
-    string getPeerIP();
+    std::string getPeerIP();
     int    getPeerPort();
 
     enum {

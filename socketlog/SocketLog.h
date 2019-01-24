@@ -15,7 +15,7 @@
 
 class SocketLog {
 public:
-    typedef function<bool(const std::string msg)> Interceptor;
+    typedef std::function<bool(const std::string msg)> Interceptor;
 
 public:
     static SocketLog* getInstance();
@@ -45,7 +45,7 @@ private:
     TCPAcceptor* acceptor = nullptr;
     bool inited = false;
 
-    vector<TCPStream*> connectedStreams;
+    std::vector<TCPStream*> connectedStreams;
     std::mutex streamMutex;
 
     std::queue<std::string> msgQueue;
