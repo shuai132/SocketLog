@@ -15,7 +15,7 @@
 
 class SocketLog {
 public:
-    typedef std::function<bool(const std::string msg)> Interceptor;
+    typedef std::function<bool(const std::string& msg)> Interceptor;
 
 public:
     static SocketLog* getInstance();
