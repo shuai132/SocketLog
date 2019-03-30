@@ -1,5 +1,3 @@
-#include <utility>
-
 //
 // Created by liushuai on 2018/4/13.
 //
@@ -22,7 +20,7 @@ SocketLog* SocketLog::getInstance() {
     return socketLog;
 }
 
-void SocketLog::post(std::string msg) {
+void SocketLog::post(const std::string& msg) {
     if (!inited)
         return;
 
@@ -36,12 +34,12 @@ void SocketLog::flush() {
     std::lock_guard<std::mutex> lock(msgQueueMutex);
 
     while (!msgQueue.empty()) {
-        send(std::move(msgQueue.front()));
+        send(msgQueue.front());
         msgQueue.pop();
     }
 }
 
-void SocketLog::send(std::string msg) {
+void SocketLog::send(const std::string& msg) {
     std::lock_guard<std::mutex> lockStream(streamMutex);
     LOGD("SocketLog::send: %s", msg.c_str());
 
