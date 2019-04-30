@@ -11,6 +11,7 @@
 #include <vector>
 #include <queue>
 #include <condition_variable>
+#include <functional>
 #include "lib/tcpacceptor.h"
 
 class SocketLog {
