@@ -1,5 +1,7 @@
 # SocketLog
 
+[![Build Status](https://www.travis-ci.org/shuai132/SocketLog.svg?branch=master)](https://www.travis-ci.org/shuai132/SocketLog)
+
 A log review tool using tcp socket, with thread safe, send queue, and multi reviewer support.  
 It can be used in most platform include android/ios, and only C++11 are required.
 
